@@ -58,7 +58,7 @@ export class AppComponent {
       params: [tx]
     });
 
-    alert(signedTx);
+    console.log("Transaction hash:" + signedTx)
   }
 
   async signMessage() {
@@ -79,7 +79,7 @@ export class AppComponent {
       formData.append('signature', signature);
 
       this.http.post<any>(`https://localhost:7061/api/auth/login?walletAddress=${this.account}`, formData).subscribe((data) => {
-        alert(data.accessToken)
+        console.log("Access token:" + data.accessToken)
       })
     });
   }
