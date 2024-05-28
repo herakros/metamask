@@ -47,10 +47,10 @@ export class AppComponent {
 
     const tx: Transaction = {
       from: this.account?.toString(),
-      to: "0xeea76c1bba4a9b62d67457e59c5af65e972bfa18",
-      gas: "0x7573",
-      gasPrice: "0xe983b1eb6",
-      data: "0xa9059cbb0000000000000000000000008ae1dee5e99856fc5219821ed080191f92e60ca0000000000000000000000000000000000000000000000000d02ab486cedc0000",
+      to: formValues.to,
+      gas: formValues.gas,
+      gasPrice: formValues.gasPrice,
+      data: formValues.data
     };
 
     const signedTx = await (window as any).ethereum.request({
