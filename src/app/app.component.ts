@@ -18,7 +18,9 @@ export class AppComponent {
     this.web3 = new Web3((window as any).ethereum);
     this.transactionForm = this.fb.group({
       to: [''],
-      amount: ['']
+      gas: [''],
+      gasPrice: [''],
+      data: ['']
     });
   }
 
@@ -42,35 +44,43 @@ export class AppComponent {
 
   public async createTransaction() {
     const formValues = this.transactionForm.value;
-    const toAddress = formValues.to;
-    const amount = formValues.amount;
 
-    const transactionRequest = {
-      recipientAddress: this.account,
-      amount: amount
+    const tx: Transaction = {
+      from: this.account?.toString(),
+      to: "0xeea76c1bba4a9b62d67457e59c5af65e972bfa18",
+      gas: "0x7573",
+      gasPrice: "0xe983b1eb6",
+      data: "0xa9059cbb0000000000000000000000008ae1dee5e99856fc5219821ed080191f92e60ca0000000000000000000000000000000000000000000000000d02ab486cedc0000",
     };
 
-    this.http.post<any>('https://localhost:7061/api/nethereum/deposit', transactionRequest)
-      .subscribe(async response => {
-        console.log(response)
+    const signedTx = await (window as any).ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [tx]
+    });
 
-        const tx: Transaction = {
-          from: this.account?.toString(),
-          to: toAddress,
-          gas: 1000000,
-          gasPrice: '1000000000',
-          data: response,
-        };
+    alert(signedTx);
+  }
 
-        const signedTx = await (window as any).ethereum.request({
-          method: 'eth_signTransaction',
-          params: [tx]
-        });
-        // const signedTx = await this.web3.eth.accounts.signTransaction(tx, (window as any).ethereum.selectedAddress);
+  async signMessage() {
+    console.log(1);
+    if (!this.account) {
+      console.log('No account detected');
+      return;
+    }
 
-        console.log(signedTx);
-      }, error => {
-        console.error('Error creating transaction:', error);
+    this.http.get<any>(`https://localhost:7061/api/auth/nonce?walletAddress=${this.account}`).subscribe(async (data) => {
+      console.log(data)
+      var signature = await (window as any).ethereum.request({
+        method: 'personal_sign',
+        params: [data, this.account]
       });
+
+      const formData = new FormData();  
+      formData.append('signature', signature);
+
+      this.http.post<any>(`https://localhost:7061/api/auth/login?walletAddress=${this.account}`, formData).subscribe((data) => {
+        alert(data.accessToken)
+      })
+    });
   }
 }

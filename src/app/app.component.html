@@ -2,16 +2,28 @@
   <h1>Send Tokens on Sepolia</h1>
   <form [formGroup]="transactionForm" (ngSubmit)="createTransaction()">
     <div>
-      <label for="to">Recipient Address:</label>
+      <label for="to">To:</label>
       <input id="to" formControlName="to" required />
     </div>
     <div>
-      <label for="amount">Amount:</label>
-      <input id="amount" formControlName="amount" required />
+      <label for="to">Gas:</label>
+      <input id="to" formControlName="gas" required />
+    </div>
+    <div>
+      <label for="amount">Gas Price:</label>
+      <input id="amount" formControlName="gasPrice" required />
+    </div>
+    <div>
+      <label for="amount">Data:</label>
+      <input id="amount" formControlName="data" required />
     </div>
     <button type="submit">Send Transaction</button>
   </form>
 </div>
 <div *ngIf="account">
   <p>Connected Account: {{ account }}</p>
+</div>
+
+<div *ngIf="account">
+  <button (click)="signMessage()">Sign Message</button>
 </div>
